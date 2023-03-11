@@ -1,0 +1,12 @@
+working-dir: ./
+params:
+  CONFIGURATION: PROD
+env-vars:
+  - SERVER_KIND=minecraft.vanilla
+prelaunch-scripts:
+  - test.sh
+run-cmd:
+  cmd: java
+  args:
+    - -jar
+    - /home/blackpoint/Games/minecraft/TLauncher-2.876.jar
