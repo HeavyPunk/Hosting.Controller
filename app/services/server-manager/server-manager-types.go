@@ -1,4 +1,4 @@
-package server_controller
+package server_manager
 
 type ServerControllerContext struct {
 	ServerPid string
@@ -19,6 +19,7 @@ type RunServerResponse struct {
 }
 
 type StopServerRequest struct {
+	ForceInterrupt bool
 }
 
 type StopServerResponse struct {

@@ -1,13 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"os/exec"
+	"simple-hosting/controller/app/settings"
+	file_settings_provider "simple-hosting/go-commons/settings/file-settings-provider"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	cmd := exec.Command("java", "-jar", "/home/blackpoint/Games/minecraft/TLauncher-2.876.jar")
-	cmd.Start()
-
-	fmt.Print(cmd.Process.Pid)
+	config := file_settings_provider.GetSetting[settings.ServiceSettings]("settings.yml")
+	gin.SetMode(config.App.Configuration)
+	def := gin.Default()
+	gr := def.Group("/server")
+	{
+		gr.POST("/start")
+	}
 }

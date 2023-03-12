@@ -1,10 +1,14 @@
-package server_controller
+package server_manager
 
 import (
 	"os/exec"
 	server_pid_service "simple-hosting/controller/app/services/server-pid-service"
 	"strconv"
 )
+
+func Init() *ServerControllerContext {
+	return &ServerControllerContext{}
+}
 
 func (serviceContext *ServerControllerContext) RunServer(request RunServerRequest) RunServerResponse {
 	cmd := exec.Command(request.RunCmd, request.Args...)
@@ -26,12 +30,16 @@ func (serviceContext *ServerControllerContext) RunServer(request RunServerReques
 }
 
 func (serviceContext *ServerControllerContext) StopServer(request StopServerRequest) StopServerResponse {
+	signal := "-15"
+	if request.ForceInterrupt {
+		signal = "-2"
+	}
 	pidStr := serviceContext.ServerPid
 	pidService := server_pid_service.Init()
-	cmd := exec.Command("kill", pidStr)
+	cmd := exec.Command("kill", signal, pidStr)
 	if err := cmd.Run(); err != nil {
 		pidStr = pidService.GetPid()
-		cmd = exec.Command("kill", pidStr)
+		cmd = exec.Command("kill", signal, pidStr)
 		if err = cmd.Run(); err != nil {
 			return StopServerResponse{Success: false, Error: err}
 		}

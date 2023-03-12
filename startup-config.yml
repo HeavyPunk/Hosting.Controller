@@ -1,10 +1,12 @@
-working-dir: ./
+working-dir: /usr/local/server
 params:
-  CONFIGURATION: PROD
+  - CONFIGURATION=PROD
 env-vars:
   - SERVER_KIND=minecraft.vanilla
 prelaunch-scripts:
   - test.sh
+  - configure-env.sh
+  - configure-server.sh
 run-cmd:
   cmd: java
   args:
