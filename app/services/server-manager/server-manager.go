@@ -34,10 +34,16 @@ func (serviceContext *ServerControllerContext) StopServer(request StopServerRequ
 	if request.ForceInterrupt {
 		signal = "-2"
 	}
-	pidStr := serviceContext.ServerPid
 	pidService := server_pid_service.Init()
+	pidStr, err := pidService.GetPid()
+	if err != nil {
+		return StopServerResponse{
+			Success: false,
+			Error:   err,
+		}
+	}
 	cmd := exec.Command("kill", signal, pidStr)
-	if err := cmd.Run(); err != nil {
+	if err = cmd.Run(); err != nil {
 		pidStr, _ = pidService.GetPid()
 		cmd = exec.Command("kill", signal, pidStr)
 		if err = cmd.Run(); err != nil {

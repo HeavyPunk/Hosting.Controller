@@ -1,4 +1,4 @@
-working-dir: .
+working-dir: /home/blackpoint/Projects/SimpleHosting/minecraft-server-playground/
 params:
   - CONFIGURATION=PROD
 env-vars:
@@ -11,4 +11,4 @@ run-cmd:
   cmd: java
   args:
     - -jar
-    - /home/blackpoint/Games/minecraft/TLauncher-2.876.jar
+    - server.jar
