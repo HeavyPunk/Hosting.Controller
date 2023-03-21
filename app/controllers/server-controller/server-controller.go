@@ -36,3 +36,19 @@ func StartServer(c *gin.Context) {
 		Error:   errStr,
 	})
 }
+
+func StopServer(c *gin.Context) {
+	var request StopServerRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid payload format"})
+		return
+	}
+	serverManager := server_manager.Init()
+	resp := serverManager.StopServer(server_manager.StopServerRequest{
+		ForceInterrupt: request.Force,
+	})
+	c.JSON(http.StatusOK, StopServerResponse{
+		Success: resp.Success,
+		Error:   resp.Error.Error(),
+	})
+}

@@ -1,4 +1,4 @@
-working-dir: /usr/local/server
+working-dir: .
 params:
   - CONFIGURATION=PROD
 env-vars:
