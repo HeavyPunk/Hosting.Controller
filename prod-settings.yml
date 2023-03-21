@@ -1,0 +1,7 @@
+app:
+  configuration: debug
+  port: 8989
+  services:
+  
+server:
+  startup-config: ./startup-config.yml
