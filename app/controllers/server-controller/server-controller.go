@@ -6,6 +6,7 @@ import (
 	server_manager "simple-hosting/controller/app/services/server-manager"
 	"simple-hosting/controller/app/settings"
 	file_settings_provider "simple-hosting/go-commons/settings/file-settings-provider"
+	errors_tools "simple-hosting/go-commons/tools/errors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,13 +28,10 @@ func StartServer(c *gin.Context) {
 		SaveStdout:      request.SaveStdout,
 		SaveStderr:      request.SaveStderr,
 	})
-	var errStr string
-	if resp.Error != nil {
-		errStr = resp.Error.Error()
-	}
+
 	c.JSON(http.StatusOK, StartServerResponse{
 		Success: resp.Success,
-		Error:   errStr,
+		Error:   errors_tools.GetErrorStringOrDefault(resp.Error, ""),
 	})
 }
 
@@ -49,6 +47,6 @@ func StopServer(c *gin.Context) {
 	})
 	c.JSON(http.StatusOK, StopServerResponse{
 		Success: resp.Success,
-		Error:   resp.Error.Error(),
+		Error:   errors_tools.GetErrorStringOrDefault(resp.Error, ""),
 	})
 }
