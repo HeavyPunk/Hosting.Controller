@@ -12,3 +12,4 @@ run-cmd:
   args:
     - -jar
     - server.jar
+    - nogui

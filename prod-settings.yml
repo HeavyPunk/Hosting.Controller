@@ -2,6 +2,20 @@ app:
   configuration: debug
   port: 8989
   services:
+    server-messaging:
+      rcon:
+        enabled: true
+        server-rcon-port: 25575
+        server-rcon-password: kirieshki-rcon
+    server-info:
+      query:
+        enabled: true
+        server-query-port: 25565
+    server-logging:
+      enabled: true
+      logging-system: file
+      page-size: 300
+      log-file: ./my-log
   
 server:
   startup-config: ./startup-config.yml
