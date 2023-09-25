@@ -1,7 +1,8 @@
 package settings
 
 type ServiceSettings struct {
-	App struct {
+	EnvironmentVars map[string]string `yaml:"environment-variables"`
+	App             struct {
 		Port          uint   `yaml:"port"`
 		Configuration string `yaml:"configuration"`
 		Services      struct {
@@ -26,6 +27,17 @@ type ServiceSettings struct {
 				PageSize      int    `yaml:"page-size"`
 				LogFile       string `yaml:"log-file"`
 			} `yaml:"server-logging"`
+
+			ServerFiles struct {
+				S3 struct {
+					Enabled  bool   `yaml:"enabled"`
+					Endpoint string `yaml:"endpoint"`
+				} `yaml:"s3"`
+				WorkerPull struct {
+					WorkerCount int `yaml:"worker-count"`
+					QueueSize   int `yaml:"queue-size"`
+				} `yaml:"worker-pool"`
+			} `yaml:"server-files"`
 		} `yaml:"services"`
 	} `yaml:"app"`
 	Server struct {

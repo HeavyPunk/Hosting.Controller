@@ -1,3 +1,7 @@
+environment-variables:
+  AWS_ACCESS_KEY_ID: v5wIxDEarnzQLz8M7W7e
+  AWS_SECRET_ACCESS_KEY: j1CspYKmYCh8eUIkl8pCXAuBxZhhddfjLUXkw9kL
+
 app:
   configuration: debug
   port: 8989
@@ -16,6 +20,14 @@ app:
       logging-system: file
       page-size: 300
       log-file: ./my-log
+    server-files:
+      s3:
+        enabled: true
+        endpoint: http://localhost:9000
+      worker-pool:
+        worker-count: 3
+        queue-size: 100
+
 
   
 server:

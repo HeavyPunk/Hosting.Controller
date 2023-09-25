@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	server_controller "simple-hosting/controller/app/controllers/server-controller"
 	state_controller "simple-hosting/controller/app/controllers/state"
 	"simple-hosting/controller/app/settings"
@@ -15,6 +16,7 @@ func main() {
 		fmt.Printf("Error getting settings: %v\n", err)
 		return
 	}
+	setEnvironment(config)
 	gin.SetMode(config.App.Configuration)
 	def := gin.Default()
 	serverGroup := def.Group("/server")
@@ -34,4 +36,10 @@ func main() {
 	}
 
 	def.Run(":" + fmt.Sprint(config.App.Port))
+}
+
+func setEnvironment(config settings.ServiceSettings) {
+	for k, v := range config.EnvironmentVars {
+		os.Setenv(k, v)
+	}
 }
