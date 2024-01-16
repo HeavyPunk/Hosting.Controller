@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	files_controller "simple-hosting/controller/app/controllers/files-controller"
 	server_controller "simple-hosting/controller/app/controllers/server-controller"
 	state_controller "simple-hosting/controller/app/controllers/state"
 	"simple-hosting/controller/app/settings"
@@ -25,8 +26,16 @@ func main() {
 		serverGroup.POST("/stop", server_controller.StopServer)
 		serverGroup.POST("/messaging/post", server_controller.PostMessageToServer)
 		serverGroup.POST("/info", server_controller.GetServerInfo)
+		serverGroup.GET("/is-running", server_controller.IsServerRunning)
 		serverGroup.POST("/logs/get-server-log-on-page", server_controller.GetServerLogsOnPage)
 		serverGroup.POST("/logs/get-server-last-log", server_controller.GetServerLogsOnLastPage)
+	}
+
+	filesGroup := def.Group("/files/s3")
+	{
+		filesGroup.POST("/save-file", files_controller.GetFileS3)
+		filesGroup.POST("/push-file", files_controller.PushFileS3)
+		filesGroup.POST("/task-status", files_controller.PollTask)
 	}
 
 	serviceGroup := def.Group("/state")

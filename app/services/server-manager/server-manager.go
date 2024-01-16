@@ -6,6 +6,7 @@ import (
 	server_pid_service "simple-hosting/controller/app/services/server-pid-service"
 	"simple-hosting/controller/app/settings"
 	"strconv"
+	"syscall"
 )
 
 func Init() *ServerControllerContext {
@@ -64,6 +65,12 @@ func (serviceContext *ServerControllerContext) StopServer(request StopServerRequ
 			return StopServerResponse{Success: false, Error: err}
 		}
 	}
+
+	pidInt, _ := strconv.Atoi(pidStr)
+	process, _ := os.FindProcess(pidInt)
+	if process != nil {
+		process.Wait()
+	}
 	return StopServerResponse{Success: true}
 }
 
@@ -79,7 +86,7 @@ func (serviceContext *ServerControllerContext) CheckForServerRunning() (bool, er
 	if err != nil {
 		return false, err
 	}
-	return process != nil, nil
+	return process.Signal(syscall.Signal(0)) == nil, nil
 }
 
 func (serviceContext *ServerControllerContext) GetFileFromServer(request GetFileFromServerRequest) GetFileFromServerResponse {
