@@ -1,8 +1,14 @@
 package server_files_service
 
 import (
+	"encoding/base64"
 	"errors"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"simple-hosting/controller/app/settings"
+	"strings"
 
 	"github.com/docker/distribution/uuid"
 )
@@ -75,4 +81,58 @@ func DeleteFile(req DeleteFileRequest) (DeleteFileResponse, error) {
 func TransferFile(req TransferFileRequest) (TransferFileResponse, error) {
 	taskId, err := pushToQueue("transfer", req)
 	return TransferFileResponse{taskId}, err
+}
+
+func CreateDirectory(req CreateDirectoryRequest) (CreateDirectoryResponse, error) {
+	taskId, err := pushToQueue("create-directory", req)
+	return CreateDirectoryResponse{taskId}, err
+}
+
+func ListDirectory(req ListDirectoryRequest) (ListDirectoryResponse, error) {
+	dir := req.PathToDirectory
+	var filesList []FileNode
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			fmt.Println(err)
+			return nil
+		}
+		var fileType fileNodeType
+		var fileExtension string
+		if info.IsDir() {
+			fileType = Directory
+			fileExtension = ""
+		} else {
+			fileType = File
+			extension := strings.Split(info.Name(), ".")
+			fileExtension = extension[len(extension)-1]
+		}
+		filesList = append(filesList, FileNode{
+			Path:        strings.TrimLeft(strings.Replace(path, dir, "", -1), "/"),
+			Type:        fileType,
+			SizeInBytes: info.Size(),
+			Name:        info.Name(),
+			Extension:   fileExtension,
+		})
+		return nil
+	})
+	if err != nil {
+		return ListDirectoryResponse{}, err
+	}
+	return ListDirectoryResponse{
+		FileNodes: filesList,
+	}, nil
+}
+
+func CreateFile(req CreateFileRequest) (CreateFileResponse, error) {
+	taskId, err := pushToQueue("create-file", req)
+	return CreateFileResponse{taskId}, err
+}
+
+func GetFileContentBase64(req GetFileContentBase64Request) (GetFileContentBase64Response, error) {
+	fileContent, err := ioutil.ReadFile(req.Path)
+	if err != nil {
+		return GetFileContentBase64Response{}, err
+	}
+	base64Content := base64.StdEncoding.EncodeToString(fileContent)
+	return GetFileContentBase64Response{base64Content}, nil
 }

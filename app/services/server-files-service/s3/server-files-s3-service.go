@@ -12,11 +12,13 @@ import (
 
 func SaveFileFromS3(req SaveFileFromS3Request) (SaveFileFromS3Response, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
+	cfg.Region = "us-east-1"
 	if err != nil {
 		log.Fatal("Failed to load default config")
 	}
 	client := s3.NewFromConfig(cfg, func(opt *s3.Options) {
 		opt.BaseEndpoint = &req.Endpoint
+		opt.UsePathStyle = true
 	})
 	result, err := client.GetObject(context.TODO(), &s3.GetObjectInput{
 		Bucket: &req.Bucket,
